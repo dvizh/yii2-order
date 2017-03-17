@@ -1,0 +1,36 @@
+
+.order-form .cart {
+    font-size: 17px;
+    margin-bottom: 20px;
+}
+
+.order-form .panel-heading h3 {
+    margin: 1px;
+}
+
+.order-form .total {
+    font-size: 27px;
+    margin-bottom: 20px;
+}
+
+.order-form .offer .btn {
+    font-size: 40px;
+}
+
+.order-form .dvizh-cart-bottom-panel {
+    text-align: right;
+}
+
+#users-list-window, #products-list-window {
+    width: 100%;
+    height: 400px;
+    border: 0px;
+}
+
+.order-form .choice-product {
+    padding: 2px;
+}
+
+.order-form .delete {
+    color: red;
+}

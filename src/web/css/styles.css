@@ -1,0 +1,74 @@
+.order-index .table td:nth-child(2) {
+    width: 50px;
+}
+
+.order-index .table td:nth-child(3) {
+    width: 76px;
+}
+
+.order-index .table td:nth-child(7), .order-index .table td:nth-child(8) {
+    width: 140px;
+}
+
+.order-index .search {
+    padding: 20px;
+}
+
+.order-informer {
+    color: #333;
+    font-size: 16px;
+}
+
+.order-informer .result {
+    background-color: yellow;
+    color: black;
+    padding: 2px;
+    font-size: 12px;
+
+}
+
+.order-informer .bad-result {
+    background-color: red;
+    color: white;
+}
+
+.order-informer .good-result {
+    background-color: green;
+    color: white;
+}
+
+.order-statistics-link a {
+    font-size: 12px;
+}
+
+.order-list .btn-default {
+    padding: 2px;
+}
+
+.order-list select, .order-list input {
+    font-size: 12px;
+    padding: 2px;
+    height: auto;
+}
+
+.menu-container {
+    float: right;
+    height: 45px;
+    margin-bottom: 10px;
+}
+.menu-container li {
+
+}
+
+.nav-link .active {
+    color: red;
+}
+
+.export {
+    text-align: right;
+    padding-right: 110px;
+}
+
+.choose-user-modal-window {
+    min-width: 80%;
+}
