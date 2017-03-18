@@ -3,7 +3,7 @@ namespace dvizh\order\models;
 
 use yii;
 
-class Element extends \yii\db\ActiveRecord implements \dvizh\dic\interfaces\order\OrderElement
+class Element extends \yii\db\ActiveRecord implements \dvizh\dic\interfaces\entity\OrderElement
 {
     public static function tableName()
     {
@@ -38,7 +38,7 @@ class Element extends \yii\db\ActiveRecord implements \dvizh\dic\interfaces\orde
         ];
     }
 
-    public function setOrder(\dvizh\dic\interfaces\order\Order $order)
+    public function setOrder(\dvizh\dic\interfaces\entity\Order $order)
     {
         $this->order_id = $order->id;
         
@@ -166,43 +166,18 @@ class Element extends \yii\db\ActiveRecord implements \dvizh\dic\interfaces\orde
     {
         return $this->count;
     }
-    
-    public function getProduct()
-    {
-        $modelStr = $this->model;
-        $productModel = new $modelStr();
-        
-        return $this->hasOne($productModel::className(), ['id' => 'item_id'])->one();
-    }
-    
-    public function getOrder() : \dvizh\dic\interfaces\order\Order
+
+    public function getOrder() : \dvizh\dic\interfaces\entity\Order
     {
         return $this->hasOne(Order::className(), ['id' => 'order_id']);
     }
 
-    public function getModel($withCartElementModel = true)
+    public function getProduct() : \dvizh\dic\interfaces\entity\SoldGoods
     {
-        if(!$withCartElementModel) {
-            return $this->model;
-        }
+        $modelStr = $this->model;
+        $productModel = new $modelStr();
 
-        if(is_string($this->model)) {
-            if(class_exists($this->model)) {
-                $model = '\\'.$this->model;
-                $productModel = new $model();
-                if ($productModel = $productModel::findOne($this->item_id)) {
-                    $model = $productModel;
-                } else {
-                    throw new \yii\base\Exception('Element model not found');
-                }
-            } else {
-                //throw new \yii\base\Exception('Unknow element model');
-            }
-        } else {
-            $model = $this->model;
-        }
-        
-        return $model;
+        return $this->hasOne($productModel::className(), ['id' => 'item_id'])->one();
     }
     
     public static function editField($id, $name, $value)

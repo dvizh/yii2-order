@@ -34,19 +34,6 @@ php composer update
 php yii migrate --migrationPath=vendor/dvizh/yii2-order/migrations
 ```
 
-Далее, связываем модуль с корзиной. Устанавливаем [dvizh/yii2-cart](https://github.com/dvizh/yii2-cart) и добавляем в начало конфига вашего приложения:
-
-```
-yii::$container->set('dvizh\order\interfaces\Cart', 'dvizh\order\drivers\Pistol88Cart');
-```
-
-Чтобы связать модуль с другой корзиной:
-```
-yii::$container->set('dvizh\order\interfaces\Cart', 'app\objects\Cart');
-```
-
-app\objects\Cart должен содержать класс, имплементирующий \dvizh\order\interfaces\Cart.
-
 Подключение и настройка
 ---------------------------------
 В конфигурационный файл приложения добавить модуль order

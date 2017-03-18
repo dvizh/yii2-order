@@ -5,7 +5,6 @@ use yii;
 use dvizh\order\models\tools\OrderSearch;
 use dvizh\order\models\Order;
 use dvizh\order\models\Payment;
-use dvizh\order\models\Element;
 use dvizh\order\models\tools\ElementSearch;
 use dvizh\order\models\Field;
 use dvizh\order\models\FieldValue;

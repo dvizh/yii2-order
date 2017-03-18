@@ -5,7 +5,7 @@ use yii;
 use dvizh\order\models\tools\OrderQuery;
 use dvizh\dic\interfaces\Order as OrderInterface;
 
-class Order extends \yii\db\ActiveRecord  implements \dvizh\dic\interfaces\order\Order
+class Order extends \yii\db\ActiveRecord  implements \dvizh\dic\interfaces\entity\Order
 {
     public $sessionId;
 

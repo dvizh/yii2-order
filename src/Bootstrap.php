@@ -8,10 +8,8 @@ class Bootstrap implements BootstrapInterface
 {
     public function bootstrap($app)
     {
-        yii::$container->set('dvizh\order\interfaces\OrderElement', 'dvizh\order\models\Element');
-        
         if(!$app->has('order')) {
-            $app->set('order', ['class' => 'dvizh\order\Order']);
+            $app->set('order', ['class' => 'dvizh\order\services\Order']);
         }
         
         if(empty($app->modules['gridview'])) {
