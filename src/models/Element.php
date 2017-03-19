@@ -3,7 +3,7 @@ namespace dvizh\order\models;
 
 use yii;
 
-class Element extends \yii\db\ActiveRecord implements \dvizh\dic\interfaces\entity\OrderElement
+class Element extends \yii\db\ActiveRecord implements \dvizh\app\interfaces\entities\OrderElement
 {
     public static function tableName()
     {
@@ -38,51 +38,34 @@ class Element extends \yii\db\ActiveRecord implements \dvizh\dic\interfaces\enti
         ];
     }
 
-    public function setOrder(\dvizh\dic\interfaces\entity\Order $order)
+    public function setOrder(\dvizh\app\interfaces\entities\Order $order)
     {
-        $this->order_id = $order->id;
-        
-        return $this;
+        $this->order_id = $order->getId();
     }
     
     public function setAssigment($isAssigment)
     {
         $this->is_assigment = $isAssigment;
-        
-        return $this;
     }
     
     public function setModelName($modelName)
     {
         $this->model = $modelName;
-        
-        return $this;
     }
     
     public function setName($name)
     {
         $this->name = $name;
-        
-        return $this;
     }
     
     public function setItemId($itemId)
     {
         $this->item_id = $itemId;
-        
-        return $this;
     }
     
     public function setCount($count)
     {
         $this->count = $count;
-    }
-    
-    public function setBasePrice($basePrice)
-    {
-        $this->base_price = $basePrice;
-        
-        return $this;
     }
     
     public function setPrice($price)
@@ -105,7 +88,6 @@ class Element extends \yii\db\ActiveRecord implements \dvizh\dic\interfaces\enti
         
         return $this;
     }
-    
 
     public function getOrderId()
     {
@@ -149,7 +131,7 @@ class Element extends \yii\db\ActiveRecord implements \dvizh\dic\interfaces\enti
     
     public function saveData()
     {
-        return $this->save();
+        return $this->save(false);
     }
     
     public function getId()
@@ -167,12 +149,12 @@ class Element extends \yii\db\ActiveRecord implements \dvizh\dic\interfaces\enti
         return $this->count;
     }
 
-    public function getOrder() : \dvizh\dic\interfaces\entity\Order
+    public function getOrder() : \dvizh\app\interfaces\entities\Order
     {
         return $this->hasOne(Order::className(), ['id' => 'order_id']);
     }
 
-    public function getProduct() : \dvizh\dic\interfaces\entity\SoldGoods
+    public function getProduct() : \dvizh\app\interfaces\entities\Goods
     {
         $modelStr = $this->model;
         $productModel = new $modelStr();

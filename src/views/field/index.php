@@ -13,17 +13,6 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="field-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
-    <div class="row">
-        <div class="col-lg-2">
-            <?= Html::a(Yii::t('order', 'Create field'), ['create'], ['class' => 'btn btn-success']) ?>
-        </div>
-        <div class="col-lg-10">
-            <?= $this->render('/parts/menu.php', ['active' => 'field']); ?>
-        </div>
-    </div>
-
-    <hr />
     
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

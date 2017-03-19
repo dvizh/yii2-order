@@ -12,9 +12,6 @@ class Order extends Component
     private $organization_id;
     private $is_assigment = false;
 
-    public $payedStatus = 'payed';
-    public $halfpayedStatus = 'halfpayed';
-    
     public function init()
     {
         parent::init();

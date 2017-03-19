@@ -10,7 +10,6 @@ use dvizh\order\models\Field;
 use dvizh\order\models\FieldValue;
 use dvizh\order\models\PaymentType;
 use dvizh\order\models\ShippingType;
-use dvizh\order\logic\Filling;
 use yii\web\Controller;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
@@ -101,7 +100,7 @@ class OrderController  extends Controller
     public function actionPushElements($id)
     {
         if($model = $this->findModel($id)) {
-            yii::createObject(['class' => '\dvizh\order\logic\OrderFilling', 'orderId' => $model->id]);
+            yii::createObject('\dvizh\order\services\Order')->filling();
         }
 
         $this->redirect(['/order/order/view', 'id' => $id]);
@@ -204,7 +203,7 @@ class OrderController  extends Controller
         $model = new Order;
 
         if ($model->load(yii::$app->request->post()) && $model->validate() && $model->save()) {
-            yii::createObject(['class' => '\dvizh\order\logic\OrderFilling', 'orderId' => $model->id])->execute();
+            yii::createObject('\dvizh\order\services\Order')->filling();
             
             if($ordersEmail = yii::$app->getModule('order')->ordersEmail) {
                 $sender = yii::$app->getModule('order')->mail
@@ -224,7 +223,7 @@ class OrderController  extends Controller
         
         return $this->redirect(yii::$app->request->referrer);
     }
-    
+
     public function actionCreate()
     {
         $model = new Order;
@@ -232,7 +231,7 @@ class OrderController  extends Controller
         $this->getView()->registerJs("jQuery('.buy-by-code-input').focus();");
 
         if ($model->load(yii::$app->request->post()) && $model->save()) {
-            yii::createObject(['class' => '\dvizh\order\logic\OrderFilling', 'orderId' => $model->id])->execute();
+            yii::createObject('\dvizh\order\services\Order')->filling();
 
             if($ordersEmail = yii::$app->getModule('order')->ordersEmail) {
                 $sender = yii::$app->getModule('order')->mail
@@ -278,7 +277,7 @@ class OrderController  extends Controller
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
         if ($model->load(yii::$app->request->post()) && $model->save()) {
-            yii::createObject(['class' => '\dvizh\order\logic\OrderFilling', 'orderId' => $model->id])->execute();
+            yii::createObject('\dvizh\order\services\Order')->filling();
 
             if($ordersEmail = yii::$app->getModule('order')->ordersEmail) {
                 $sender = yii::$app->getModule('order')->mail
@@ -294,24 +293,6 @@ class OrderController  extends Controller
             $this->module->trigger($module::EVENT_ORDER_CREATE, $orderEvent);
 
             $nextStepAction = false;
-
-            // создаём заказ, очищаем информер корзины
-            if ($model->cost == 0) {
-                return [
-                    'status' => 'success',
-                    'nextStep' => $nextStepAction
-                ];
-            }
-
-            // создаём заказ, отдаём урл на рендер формы оплаты
-            if (\yii::$app->getModule('order')->paymentFormAction) {
-                $nextStepAction = Url::to([\yii::$app->getModule('order')->paymentFormAction , 'id' => $model->id, 'useAjax' => 1]);
-            }
-
-            if ($this->module->paymentFreeTypeIds && in_array($model->payment_type_id, $this->module->paymentFreeTypeIds)) {
-                yii::createObject(['class' => '\dvizh\order\logic\OrderChangeStatus', 'orderId' => $model->id])->execute();
-                $nextStepAction = false;
-            }
 
             return [
                 'status' => 'success',
@@ -338,7 +319,7 @@ class OrderController  extends Controller
             $model->user_id = yii::$app->user->id;
 
             if($model->save()) {
-                yii::createObject(['class' => '\dvizh\order\logic\OrderFilling', 'orderId' => $model->id])->execute();
+                yii::createObject('\dvizh\order\services\Order', [$model])->filling();
                 
                 if($ordersEmail = yii::$app->getModule('order')->ordersEmail) {
                     $sender = yii::$app->getModule('order')->mail
@@ -388,9 +369,10 @@ class OrderController  extends Controller
     {
         if($id = yii::$app->request->post('id')) {
             $model = Order::findOne($id);
+
             $status = yii::$app->request->post('status');
 
-            yii::createObject(['class' => '\dvizh\order\logic\OrderChangeStatus', 'orderId' => $model->id, 'status' => $status])->execute();
+            yii::createObject('\dvizh\order\services\Order', [$model])->setStatus($status);
 
             die(json_encode(['result' => 'success']));
         }
@@ -429,7 +411,7 @@ class OrderController  extends Controller
         $orderEvent = new OrderEvent(['model' => $model]);
         $this->module->trigger($module::EVENT_ORDER_DELETE, $orderEvent);
 
-        yii::createObject(['class' => '\dvizh\order\logic\OrderCancel', 'orderId' => $model->id])->execute();
+        yii::createObject('\dvizh\order\services\Order', [$model])->cancel();
 
         return $this->redirect(['index']);
     }

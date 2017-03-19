@@ -3,9 +3,9 @@ namespace dvizh\order\models;
 
 use yii;
 use dvizh\order\models\tools\OrderQuery;
-use dvizh\dic\interfaces\Order as OrderInterface;
+use dvizh\app\interfaces\Order as OrderInterface;
 
-class Order extends \yii\db\ActiveRecord  implements \dvizh\dic\interfaces\entity\Order
+class Order extends \yii\db\ActiveRecord  implements \dvizh\app\interfaces\entities\Order
 {
     public $sessionId;
 
@@ -75,17 +75,23 @@ class Order extends \yii\db\ActiveRecord  implements \dvizh\dic\interfaces\entit
     public function setDeleted($deleted)
     {
         $this->is_deleted = $deleted;
-        
-        return $this;
     }
     
     public function setStatus($status)
     {
         $this->status = $status;
-        
-        return $this;
     }
-    
+
+    public function setCost(int $cost)
+    {
+        $this->cost = $cost;
+    }
+
+    public function setCount(int $count)
+    {
+        $this->count = $count;
+    }
+
     public function saveData()
     {
         return $this->save(false);
@@ -96,18 +102,26 @@ class Order extends \yii\db\ActiveRecord  implements \dvizh\dic\interfaces\entit
         return $this->id;
     }
     
-    public function getCost()
+    public function getCost() : int
     {
         return $this->cost;
     }
-    
+
+    public function getCount() : int
+    {
+        return $this->count;
+    }
+
     function setPaymentStatus($status)
     {
         $this->payment = $status;
-        
-        return $this;
     }
-    
+
+    public function getAssigment()
+    {
+        return $this->is_assigment;
+    }
+
     public function getTotal()
     {
         return floatVal($this->hasMany(Element::className(), ['order_id' => 'id'])->sum('price*count'));
@@ -172,11 +186,6 @@ class Order extends \yii\db\ActiveRecord  implements \dvizh\dic\interfaces\entit
     public function getShipping()
     {
         return $this->hasOne(ShippingType::className(), ['id' => 'shipping_type_id']);
-    }
-    
-    public function getCount()
-    {
-        return intval($this->hasMany(Element::className(), ['order_id' => 'id'])->sum('count'));
     }
 
     public function getFields()

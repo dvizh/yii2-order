@@ -22,45 +22,25 @@ class Module extends \yii\base\Module
     public $currencyPosition = 'after';
     public $priceFormat = [2, '.', ''];
     public $adminRoles = ['admin', 'superadmin'];
-    public $cartCustomFields = ['Остаток' => 'amount'];
 
-    public $paymentFormAction = false;
-    public $paymentFreeTypeIds = false;
-
-    public $adminMenu = ['orders', 'field', 'payment-type', 'payment'];
     public $superadminRole = 'superadmin';
-    
-    public $createOrderButton = true;
-    
+
     public $operatorRoles = ['manager', 'admin', 'superadmin'];
     public $operatorOpenStatus = 'process';
     
     public $userModel = '\common\models\User';
-    public $userSearchModel = 'backend\models\search\UserSearch';
-    
-    public $userModelCustomFields = [];
-    
-    public $productModel = 'dvizh\shop\models\Product';
-    public $productSearchModel = 'dvizh\shop\models\product\ProductSearch';
-    public $productCategories = null;
-    
+
     public $orderColumns = ['client_name', 'phone', 'email', 'payment_type_id', 'shipping_type_id'];
-    
-    public $elementModels = []; //depricated
-	
+
     public $sellers = null; //collable, return seller list
     
     public $sellerModel = '\common\models\User';
-    
-    public $workers = [];
-    
+
     public $elementToOrderUrl = false;
 
     public $showPaymentColumn = false;
-    
+
     private $mail;
-    
-    public $discountDescriptionCallback = '';
 
     public function init()
     {
@@ -85,31 +65,6 @@ class Module extends \yii\base\Module
         }
         
         return $this->mail;
-    }
-    
-    public function getWorkersList()
-    {
-        if(is_callable($this->workers)) {
-            $values = $this->workers;
-            
-            return $values();
-        } else {
-            return $this->workers;
-        }
-        
-        return [];
-    }
-    
-    public function getProductCategoriesList()
-    {
-        if(is_callable($this->productCategories))
-        {
-            $values = $this->productCategories;
-            
-            return $values();
-        }
-        
-        return [];
     }
     
     public function getSellerList()

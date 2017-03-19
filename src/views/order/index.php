@@ -71,16 +71,6 @@ $columns[] = [
         if($model->promocode) {
             $total .= Html::tag('div', $model->promocode, ['style' => 'color: orange; font-size: 80%;', yii::t('order', 'Promocode')]);
         }
-        if  (is_object(yii::$app->getModule('order')->discountDescriptionCallback)) {
-
-            $callback = yii::$app->getModule('order')->discountDescriptionCallback;
-            $certificate = $callback($model->id);
-            if  ($certificate) {
-                $total .= Html::tag('div',$certificate->code, ['style' => 'color: green; font-size: 80%;', yii::t('order', 'Certificate')]);
-            }
-        } else {
-            $total .= '';
-        }
 
         return $total;
     },
@@ -209,17 +199,6 @@ $order = yii::$app->order;
 
 
 <h1><?=yii::t('order', 'Orders');?></h1>
-
-<div class="main-menu row">
-    <div class="col-lg-2">
-        <?php if(Yii::$app->getModule('order')->createOrderButton) { ?>
-            <?= Html::a(yii::t('order', 'Create order'), ['create'], ['class' => 'btn btn-success']) ?>
-        <?php } ?>
-    </div>
-    <div class="col-lg-10">
-        <?= $this->render('/parts/menu.php', ['active' => 'orders']); ?>
-    </div>
-</div>
 
 <div class="informer-widget">
     <div class="panel panel-primary">
@@ -351,6 +330,7 @@ $order = yii::$app->order;
                                         </select>
                                     </div>
                                 <?php } ?>
+                                
                                 <div class="col-md-2">
                                     <input type="checkbox" <?php if(yii::$app->request->get('promocode')) echo ' checked="checked"'; ?> name="promocode" value="1" id="order-promocode" />
                                     <label for="order-promocode"><?=yii::t('order', 'Promocode');?></label>

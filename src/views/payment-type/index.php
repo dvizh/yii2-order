@@ -12,19 +12,8 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('order', 'Orders'), 'url' =>
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<div class="field-index">
+<div class="payment-type-index">
     <h1><?= Html::encode($this->title) ?></h1>
-
-    <div class="row">
-        <div class="col-lg-2">
-            <?= Html::a(Yii::t('order', 'Create payment type'), ['create'], ['class' => 'btn btn-success']) ?>
-        </div>
-        <div class="col-lg-10">
-            <?= $this->render('/parts/menu.php', ['active' => 'payment-type']); ?>
-        </div>
-    </div>
-
-    <hr />
     
     <?= \kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,

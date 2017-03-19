@@ -58,10 +58,7 @@ php yii migrate --migrationPath=vendor/dvizh/yii2-order/migrations
 * ordersEmail - почта администратора, туда уходят письма с заказами
 * robotEmail - e-mail робота (по умолчанию no-reply@localhost)
 * robotName - имя почтового робота (по умолчанию Robot)
-* orderColumns - массмв полей для вывода. Кастомные поля добавляются как массив, содержащий ID и наименование поля: ['field' => 2, 'label' => 'Автомобиль']
 * dateFormat - формат даты (по умолчанию d.m.Y H:i:s)
-* cartService - имя компонента, в которой реализована корзина (по умолчанию cart). Интерфейс смотреть в dvizh/yii2-cart.
-
 * currency - валюта, по умолчанию рубли
 * currencyPosition - позиция значка валюты относительно цены (before или after)
 * priceFormat - формат цены (по умолчанию [2, '.', ''])
@@ -84,12 +81,6 @@ php yii migrate --migrationPath=vendor/dvizh/yii2-order/migrations
 
 ```php
 <?=OrderForm::widget();?>
-```
-
-Кнопка "заказ в один клик" - dvizh\order\widgets\OneClick:
-
-```php
-<?=OneClick::widget(['model' => $model]);?>
 ```
 
 Триггеры

@@ -8,10 +8,7 @@ dvizh.orders_list = {
         $('.order-index .show-details').on('click', function(e) {
             var self = this;
             var thisTableRow = $(self).closest('tr');
-            //alert($(e.target.tagName).parent().html());
-            // if($(e.target.tagName).parent().get(0).tagName == 'A' | e.target.tagName == 'A') {
-            //     return null;
-            // }
+
             if(thisTableRow.next('tr').hasClass('order-detail')) {
                 thisTableRow.next('tr').remove();
             }

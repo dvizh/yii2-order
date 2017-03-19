@@ -6,6 +6,7 @@ use Yii;
 use dvizh\order\models\Payment;
 use dvizh\order\models\PaymentType;
 use dvizh\order\models\tools\PaymentSearch;
+use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -16,6 +17,15 @@ class PaymentController extends Controller
     public function behaviors()
     {
         return [
+            'adminAccess' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => $this->module->adminRoles,
+                    ]
+                ]
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

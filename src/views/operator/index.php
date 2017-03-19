@@ -114,20 +114,6 @@ $columns[] = [
 ?>
 
 <div class="order-index">
-    
-    
-    <div class="row">
-        <div class="col-lg-2">
-            <?php if(Yii::$app->getModule('order')->createOrderButton) { ?>
-                <?= Html::a(yii::t('order', 'Create order'), ['/order/order/create'], ['class' => 'btn btn-success']) ?>
-            <?php } ?>
-        </div>
-        <div class="col-lg-10">
-            <?= $this->render('/parts/menu.php', ['active' => 'operator']); ?>
-        </div>
-    </div>
-
-    <hr />
 
     <style>
         .operatorka tr {
