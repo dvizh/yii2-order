@@ -22,12 +22,15 @@ class Order extends \yii\base\Object implements \dvizh\app\interfaces\services\O
 
     public function getUserTotalSum(User $user) : int
     {
-        return Order::find()->where(['user_id' => $user->getId()])->sum('cost');
+        $order = $this->order;
+
+        return $order::find()->where(['user_id' => $user->getId()])->sum('cost');
     }
 
-    public function getById($id) : \dvizh\app\interfaces\entities\Order
+    public function getById(int $id) : \dvizh\app\interfaces\entities\Order
     {
-        return \dvizh\order\models\Order::find()->where(['id' => $id])->one();
+        $order = $this->order;
+        return $order::find()->where(['id' => $id])->one();
     }
 
     public function putElement(\dvizh\app\interfaces\entities\CartElement $element) : int
