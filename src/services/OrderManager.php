@@ -5,7 +5,6 @@ use \dvizh\app\interfaces\entities\User;
 use \dvizh\app\interfaces\entities\Order as OrderEntity;
 use \dvizh\app\interfaces\services\singletons\UserCart;
 use \dvizh\app\interfaces\entities\OrderElement;
-use yii\db\Query;
 
 class OrderManager extends \yii\base\Object implements \dvizh\app\interfaces\data\OrderManager
 {
