@@ -7,7 +7,7 @@ use \dvizh\app\interfaces\services\singletons\UserCart;
 use \dvizh\app\interfaces\entities\OrderElement;
 use yii\db\Query;
 
-class Order extends \yii\base\Object implements \dvizh\app\interfaces\services\Order
+class OrderManager extends \yii\base\Object implements \dvizh\app\interfaces\services\Order
 {
     protected $cart, $element, $order, $organization_id, $is_assigment;
 
