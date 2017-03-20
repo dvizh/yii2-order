@@ -30,6 +30,7 @@ class OrderManager extends \yii\base\Object implements \dvizh\app\interfaces\dat
     public function getById(int $id) : \dvizh\app\interfaces\entities\Order
     {
         $order = $this->order;
+        
         return $order::find()->where(['id' => $id])->one();
     }
 
