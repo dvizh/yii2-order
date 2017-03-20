@@ -8,7 +8,7 @@ use \dvizh\app\interfaces\entities\OrderElement;
 
 class OrderManager extends \yii\base\Object implements \dvizh\app\interfaces\data\OrderManager
 {
-    protected $cart, $element, $order, $organization_id, $is_assigment;
+    protected $cart, $element, $order;
 
     public function __construct(OrderEntity $order, UserCart $cart, OrderElement $element, $config = [])
     {
