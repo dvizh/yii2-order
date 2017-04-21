@@ -31,7 +31,7 @@ php composer update
 Далее, мигрируем базу:
 
 ```
-php yii migrate --migrationPath=vendor/dvizh/yii2-order/migrations
+php yii migrate --migrationPath=vendor/dvizh/yii2-order/src/migrations
 ```
 
 Далее, связываем модуль с корзиной. Устанавливаем [dvizh/yii2-cart](https://github.com/dvizh/yii2-cart) и добавляем в начало конфига вашего приложения:
