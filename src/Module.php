@@ -10,37 +10,63 @@ class Module extends \yii\base\Module
     const EVENT_ORDER_DELETE = 'delete';
     const EVENT_ELEMENT_DELETE = 'delete_element';
 
+    public $countryCode = 'RU';
+
+    public $adminRoles = ['admin', 'superadmin'];
+    public $operatorRoles = ['manager', 'admin', 'superadmin'];
+    public $operatorOpenStatus = 'process';
+
     public $orderStatuses = ['new' => 'Новый', 'approve' => 'Подтвержден', 'cancel' => 'Отменен', 'process' => 'В обработке', 'done' => 'Выполнен'];
     public $defaultStatus = 'new';
+
     public $successUrl = '/order/info/thanks/';
     public $orderCreateRedirect = 'order/view';
+
     public $robotEmail = "no-reply@localhost";
     public $dateFormat = 'd.m.Y H:i:s';
     public $robotName = 'Robot';
-    public $ordersEmail = false;
+    public $adminNotificationEmail = false;
+    public $clientEmailNotification = true;
+
     public $currency = ' р.';
     public $currencyPosition = 'after';
     public $priceFormat = [2, '.', ''];
-    public $adminRoles = ['admin', 'superadmin'];
+
+    public $cartCustomFields = ['Остаток' => 'amount'];
+
+    public $paymentFormAction = false;
+    public $paymentFreeTypeIds = false;
 
     public $superadminRole = 'superadmin';
 
-    public $operatorRoles = ['manager', 'admin', 'superadmin'];
-    public $operatorOpenStatus = 'process';
+    public $createOrderUrl = false;
+
+    public $userModel = '\dvizh\client\models\Client';
+    public $userSearchModel = '\dvizh\client\models\client\ClientSearch';
     
-    public $userModel = '\common\models\User';
-
+    public $userModelCustomFields = [];
+    
+    public $productModel = 'dvizh\shop\models\Product';
+    public $productSearchModel = 'dvizh\shop\models\product\ProductSearch';
+    public $productCategories = null;
+    
     public $orderColumns = ['client_name', 'phone', 'email', 'payment_type_id', 'shipping_type_id'];
-
+    
+    public $elementModels = []; //depricated
+	
     public $sellers = null; //collable, return seller list
     
     public $sellerModel = '\common\models\User';
-
+    
+    public $workers = [];
+    
     public $elementToOrderUrl = false;
 
     public $showPaymentColumn = false;
-
+    
     private $mail;
+    
+    public $discountDescriptionCallback = '';
 
     public function init()
     {
@@ -65,6 +91,31 @@ class Module extends \yii\base\Module
         }
         
         return $this->mail;
+    }
+    
+    public function getWorkersList()
+    {
+        if(is_callable($this->workers)) {
+            $values = $this->workers;
+            
+            return $values();
+        } else {
+            return $this->workers;
+        }
+        
+        return [];
+    }
+    
+    public function getProductCategoriesList()
+    {
+        if(is_callable($this->productCategories))
+        {
+            $values = $this->productCategories;
+            
+            return $values();
+        }
+        
+        return [];
     }
     
     public function getSellerList()

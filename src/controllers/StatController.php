@@ -8,6 +8,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
+use dvizh\order\models\Order;
 
 class StatController  extends Controller
 {
@@ -34,7 +35,7 @@ class StatController  extends Controller
 
     public function actionIndex()
     {
-        $model = yii::$app->orderModel;
+        $model = new Order;
 
         return $this->render('index', [
             'model' => $model,
@@ -46,7 +47,7 @@ class StatController  extends Controller
         $m = Html::encode($m);
         $y = Html::encode($y);
 
-        $model = yii::$app->orderModel;
+        $model = new Order;
 
         return $this->render('month', [
             'm' => $m,

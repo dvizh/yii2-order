@@ -9,9 +9,9 @@ class Bootstrap implements BootstrapInterface
     public function bootstrap($app)
     {
         if(!$app->has('order')) {
-            $app->set('order', ['class' => 'dvizh\order\services\Order']);
+            $app->set('order', ['class' => 'dvizh\order\Order']);
         }
-        
+
         if(empty($app->modules['gridview'])) {
             $app->setModule('gridview', [
                 'class' => '\kartik\grid\Module',

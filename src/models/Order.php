@@ -3,9 +3,9 @@ namespace dvizh\order\models;
 
 use yii;
 use dvizh\order\models\tools\OrderQuery;
-use dvizh\app\interfaces\Order as OrderInterface;
+use dvizh\order\interfaces\Order as OrderInterface;
 
-class Order extends \yii\db\ActiveRecord  implements \dvizh\app\interfaces\entities\Order
+class Order extends \yii\db\ActiveRecord implements OrderInterface
 {
     public $sessionId;
 
@@ -24,12 +24,21 @@ class Order extends \yii\db\ActiveRecord  implements \dvizh\app\interfaces\entit
     public function rules()
     {
         return [
-            [['email'], 'required'],
-            [['status', 'date', 'payment', 'comment', 'delivery_time', 'address'], 'string'],
-            [['email'], 'email'],
+            [['phone', 'email'], 'emailAndPhoneValidation', 'skipOnEmpty' => false],
+            [['date', 'payment', 'comment', 'delivery_time', 'address'], 'string'],
+            ['status', 'in', 'range' => array_keys(yii::$app->getModule('order')->orderStatuses)],
+            ['email', 'email'],
+            [['phone'], 'udokmeci\yii2PhoneValidator\PhoneValidator', 'country' => yii::$app->getModule('order')->countryCode],
             [['status', 'date', 'payment', 'client_name', 'phone', 'email', 'comment', 'delivery_time_date', 'delivery_type', 'address'], 'safe'],
             [['seller_user_id', 'cost', 'base_cost', 'organization_id', 'shipping_type_id', 'payment_type_id', 'delivery_time_hour', 'delivery_time_min', 'is_deleted', 'is_assigment'], 'integer'],
         ];
+    }
+
+    public function emailAndPhoneValidation($attribute, $params)
+    {
+        if(empty($this->phone) && empty($this->email)) {
+            $this->addError($attribute, yii::t('order', 'Phone or email is required'));
+        }
     }
 
     public function attributeLabels()
@@ -75,23 +84,17 @@ class Order extends \yii\db\ActiveRecord  implements \dvizh\app\interfaces\entit
     public function setDeleted($deleted)
     {
         $this->is_deleted = $deleted;
+
+        return $this;
     }
     
     public function setStatus($status)
     {
         $this->status = $status;
+        
+        return $this;
     }
-
-    public function setCost(int $cost)
-    {
-        $this->cost = $cost;
-    }
-
-    public function setCount(int $count)
-    {
-        $this->count = $count;
-    }
-
+    
     public function saveData()
     {
         return $this->save(false);
@@ -102,26 +105,18 @@ class Order extends \yii\db\ActiveRecord  implements \dvizh\app\interfaces\entit
         return $this->id;
     }
     
-    public function getCost() : int
+    public function getCost()
     {
         return $this->cost;
     }
-
-    public function getCount() : int
-    {
-        return $this->count;
-    }
-
+    
     function setPaymentStatus($status)
     {
         $this->payment = $status;
+        
+        return $this;
     }
-
-    public function getAssigment()
-    {
-        return $this->is_assigment;
-    }
-
+    
     public function getTotal()
     {
         return floatVal($this->hasMany(Element::className(), ['order_id' => 'id'])->sum('price*count'));
@@ -186,6 +181,11 @@ class Order extends \yii\db\ActiveRecord  implements \dvizh\app\interfaces\entit
     public function getShipping()
     {
         return $this->hasOne(ShippingType::className(), ['id' => 'shipping_type_id']);
+    }
+    
+    public function getCount()
+    {
+        return intval($this->hasMany(Element::className(), ['order_id' => 'id'])->sum('count'));
     }
 
     public function getFields()

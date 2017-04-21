@@ -26,7 +26,7 @@ class OrderController  extends Controller
         return [
             'adminAccess' => [
                 'class' => AccessControl::className(),
-				'only' => ['create', 'update', 'index', 'view', 'push-elements', 'print', 'delete', 'editable', 'to-order', 'update-status', 'fast-create'],
+                'only' => ['update', 'index', 'view', 'print', 'delete', 'editable', 'to-order', 'update-status'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -38,20 +38,10 @@ class OrderController  extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
-                    'push-elements' => ['post'],
                     'to-order' => ['post'],
                 ],
             ],
         ];
-    }
-
-    public function beforeAction($action)
-    {
-        if ($action->id == 'print' | $action->id == 'create') {
-            $this->enableCsrfValidation = false;
-        }
-
-        return parent::beforeAction($action);
     }
 
     public function actionIndex($tab = 'orders')
@@ -60,53 +50,33 @@ class OrderController  extends Controller
 
         $searchParams = yii::$app->request->queryParams;
         $searchParams['OrderSearch']['is_deleted'] = 0;
-        
-        //if(!yii::$app->user->can(current(yii::$app->getModule('order')->adminRoles))) {
-        //    $searchParams['OrderSearch']['seller_user_id'] = yii::$app->user->id;
-        //}
 
         $dataProvider = $searchModel->search($searchParams);
 
-        if(!yii::$app->request->get('sort')) {
-            $dataProvider->query->orderBy('id DESC');
-        }
-        
-        if(yii::$app->request->get('time_start')) {
-            $dataProvider->query->orderBy('order.timestamp ASC');
-            $dataProvider->pagination = ["pageSize" => 100]; 
-        }
-        
         if($tab == 'assigments') {
             $dataProvider->query->andWhere(['order.is_assigment' => '1']);
         } else {
             $dataProvider->query->andWhere('(order.is_assigment IS NULL OR order.is_assigment = 0)');
         }
 
+        $this->setCustomQueryParams($dataProvider->query);
+
         $paymentTypes = ArrayHelper::map(PaymentType::find()->all(), 'id', 'name');
         $shippingTypes = ArrayHelper::map(ShippingType::find()->all(), 'id', 'name');
 
-		$this->getView()->registerJs('dvizh.orders_list.elementsUrl = "'.Url::toRoute(['/order/tools/ajax-elements-list']).'";');
+        $this->getView()->registerJs('dvizh.orders_list.elementsUrl = "'.Url::toRoute(['/order/tools/ajax-elements-list']).'";');
 
         return $this->render('index', [
             'tab' => Html::encode($tab),
             'searchModel' => $searchModel,
             'shippingTypes' => $shippingTypes,
             'paymentTypes' => $paymentTypes,
-			'module' => $this->module,
+            'module' => $this->module,
             'dataProvider' => $dataProvider,
         ]);
     }
-
-    public function actionPushElements($id)
-    {
-        if($model = $this->findModel($id)) {
-            yii::createObject('\dvizh\order\services\Order')->filling();
-        }
-
-        $this->redirect(['/order/order/view', 'id' => $id]);
-    }
     
-    public function actionView($id, $push_cart = false)
+    public function actionView($id)
     {
         $model = $this->findModel($id);
         
@@ -122,8 +92,6 @@ class OrderController  extends Controller
         $shippingTypes = ArrayHelper::map(ShippingType::find()->all(), 'id', 'name');
 
         $fieldFind = Field::find();
-
-        $this->getView()->registerJs('dvizh.order.outcomingAction = "' . Url::toRoute(['/order/tools/outcoming']) . '";');
 
         return $this->render('view', [
             'searchModel' => $searchModel,
@@ -198,115 +166,7 @@ class OrderController  extends Controller
         ]);
     }
 
-    public function actionFastCreate()
-    {
-        $model = new Order;
-
-        if ($model->load(yii::$app->request->post()) && $model->validate() && $model->save()) {
-            yii::createObject('\dvizh\order\services\Order')->filling();
-            
-            if($ordersEmail = yii::$app->getModule('order')->ordersEmail) {
-                $sender = yii::$app->getModule('order')->mail
-                    ->compose('admin_notification', ['model' => $model])
-                    ->setTo($ordersEmail)
-                    ->setFrom(yii::$app->getModule('order')->robotEmail)
-                    ->setSubject(Yii::t('order', 'New order')." #{$model->id} ({$model->client_name})")
-                    ->send();
-            }
-
-            $module = $this->module;
-            $orderEvent = new OrderEvent(['model' => $model, 'elements' => $model->elements]);
-            $this->module->trigger($module::EVENT_ORDER_CREATE, $orderEvent);
-        } else {
-            
-        }
-        
-        return $this->redirect(yii::$app->request->referrer);
-    }
-
     public function actionCreate()
-    {
-        $model = new Order;
-
-        $this->getView()->registerJs("jQuery('.buy-by-code-input').focus();");
-
-        if ($model->load(yii::$app->request->post()) && $model->save()) {
-            yii::createObject('\dvizh\order\services\Order')->filling();
-
-            if($ordersEmail = yii::$app->getModule('order')->ordersEmail) {
-                $sender = yii::$app->getModule('order')->mail
-                    ->compose('admin_notification', ['model' => $model])
-                    ->setTo($ordersEmail)
-                    ->setFrom(yii::$app->getModule('order')->robotEmail)
-                    ->setSubject(Yii::t('order', 'New order')." #{$model->id} ({$model->client_name})")
-                    ->send();
-            }
-
-            $module = $this->module;
-            $orderEvent = new OrderEvent(['model' => $model, 'elements' => $model->elements]);
-            $this->module->trigger($module::EVENT_ORDER_CREATE, $orderEvent);
-
-            return $this->redirect([$this->module->orderCreateRedirect, 'id' => $model->id]);
-        } else {
-            //yii::$app->cart->truncate();
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    public function actionGetOrderFormLight($useAjax = false)
-    {
-        return $this->renderAjax('formLight', [
-            'useAjax' => $useAjax,
-        ]);
-    }
-
-    public function actionCreateAjax()
-    {
-        $model = new Order;
-
-        if ((yii::$app->has('worksess')) && $session = yii::$app->worksess->soon()) {
-            $model->sessionId = $session->id;
-        } else {
-            $model->sessionId = null;
-        }
-
-        $order = yii::$app->request->post('Order');
-
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-
-        if ($model->load(yii::$app->request->post()) && $model->save()) {
-            yii::createObject('\dvizh\order\services\Order')->filling();
-
-            if($ordersEmail = yii::$app->getModule('order')->ordersEmail) {
-                $sender = yii::$app->getModule('order')->mail
-                    ->compose('admin_notification', ['model' => $model])
-                    ->setTo($ordersEmail)
-                    ->setFrom(yii::$app->getModule('order')->robotEmail)
-                    ->setSubject(Yii::t('order', 'New order')." #{$model->id} ({$model->client_name})")
-                    ->send();
-            }
-
-            $module = $this->module;
-            $orderEvent = new OrderEvent(['model' => $model, 'elements' => $model->elements]);
-            $this->module->trigger($module::EVENT_ORDER_CREATE, $orderEvent);
-
-            $nextStepAction = false;
-
-            return [
-                'status' => 'success',
-                'nextStep' => $nextStepAction
-            ];
-
-        } else {
-            return [
-                'status' => 'error'
-            ];
-        }
-    }
-
-    public function actionCustomerCreate()
     {
         $model = new Order(['scenario' => 'customer']);
 
@@ -319,12 +179,10 @@ class OrderController  extends Controller
             $model->user_id = yii::$app->user->id;
 
             if($model->save()) {
-                yii::createObject('\dvizh\order\services\Order', [$model])->filling();
-                
-                if($ordersEmail = yii::$app->getModule('order')->ordersEmail) {
+                if($adminNotificationEmail = yii::$app->getModule('order')->adminNotificationEmail) {
                     $sender = yii::$app->getModule('order')->mail
                         ->compose('admin_notification', ['model' => $model])
-                        ->setTo($ordersEmail)
+                        ->setTo($adminNotificationEmail)
                         ->setFrom(yii::$app->getModule('order')->robotEmail)
                         ->setSubject(Yii::t('order', 'New order')." #{$model->id} ({$model->client_name})")
                         ->send();
@@ -369,12 +227,12 @@ class OrderController  extends Controller
     {
         if($id = yii::$app->request->post('id')) {
             $model = Order::findOne($id);
-
             $status = yii::$app->request->post('status');
-
-            yii::createObject('\dvizh\order\services\Order', [$model])->setStatus($status);
-
-            die(json_encode(['result' => 'success']));
+            if($model->setStatus($status)->save(false)) {
+                die(json_encode(['result' => 'success']));
+            } else {
+                die(json_encode(['result' => 'fail', 'error' => 'enable to save']));
+            }
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
@@ -411,7 +269,7 @@ class OrderController  extends Controller
         $orderEvent = new OrderEvent(['model' => $model]);
         $this->module->trigger($module::EVENT_ORDER_DELETE, $orderEvent);
 
-        yii::createObject('\dvizh\order\services\Order', [$model])->cancel();
+        yii::$app->order->cancel($model);
 
         return $this->redirect(['index']);
     }
@@ -421,6 +279,7 @@ class OrderController  extends Controller
         $name = yii::$app->request->post('name');
         $value = yii::$app->request->post('value');
         $pk = unserialize(base64_decode(yii::$app->request->post('pk')));
+
         OrderElement::editField($pk, $name, $value);
     }
 
@@ -443,6 +302,47 @@ class OrderController  extends Controller
         }
 
         return json_encode($json);
+    }
+
+    protected function setCustomQueryParams($query)
+    {
+        if(yii::$app->request->get('promocode')) {
+            $query->andWhere("promocode != ''");
+            $query->andWhere("promocode IS NOT NULL");
+        }
+
+        //По дате заказа
+        if($dateStart = yii::$app->request->get('date_start')) {
+            $dateStop = yii::$app->request->get('date_stop');
+            if($dateStop) {
+                $dateStop = date('Y-m-d', strtotime($dateStop));
+            }
+
+            $dateStart = date('Y-m-d', strtotime($dateStart));
+
+            if($dateStart == $dateStop) {
+                $query->andWhere(['DATE_FORMAT(date, "%Y-%m-%d")' => $dateStart]);
+            } else {
+                if(!$dateStop) {
+                    $query->andWhere('DATE_FORMAT(date, "%Y-%m-%d") = :dateStart', [':dateStart' => $dateStart]);
+                } else {
+                    $query->andWhere('date >= :dateStart', [':dateStart' => $dateStart]);
+                    $query->andWhere('date <= :dateStop', [':dateStop' => $dateStop]);
+                }
+            }
+        }
+
+        //По времени заказа
+        if($timeStart = yii::$app->request->get('time_start')) {
+            $query->andWhere('date >= :timeStart', [':timeStart' => $timeStart]);
+        }
+
+        if($timeStop = yii::$app->request->get('time_stop')) {
+            if(urldecode($timeStop) == '0000-00-00 00:00:00') {
+                $timeStop = date('Y-m-d H:i:s');
+            }
+            $query->andWhere('date <= :timeStop', [':timeStop' => $timeStop]);
+        }
     }
 
     protected function findModel($id)

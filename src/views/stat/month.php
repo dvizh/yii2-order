@@ -11,7 +11,7 @@ $days = range(1, $daysCount);
 
 $this->title = $month.' - '.yii::t('order', 'Order statistics per month');
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('order', 'Orders'), 'url' => ['/order/order/index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('order', 'Orders'), 'url' => ['/order/default/index']];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('order', 'Order statistics'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $month;
 
@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $month;
             
         </div>
         <div class="col-lg-10">
-            <?= $this->render('/parts/menu.php', ['active' => 'statistics']); ?>
+
         </div>
     </div>
     <div class="container">

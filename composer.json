@@ -1,12 +1,12 @@
 {
     "name": "dvizh/yii2-order",
-    "description": "Admin panel and widgets for applicaion orders",
-    "keywords": ["yii2", "yii 2", "application", "order", "module", "dvizh"],
-    "homepage": "https://github.com/dvizh/yii2-order",
+    "description": "yii2-order it's a module for site cart order",
+    "keywords": ["yii2", "yii 2", "application", "order", "shop", "module", "dvizh"],
+    "homepage": "https://github.com/dvizh/yii2-cart",
     "type": "yii2-extension",
     "license": "BSD-3-Clause",
     "support": {
-        "source": "https://github.com/dvizh/yii2-order"
+        "source": "https://github.com/dvizh/yii2-cart"
     },
     "authors": [
         {
@@ -16,7 +16,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": ">=7.1",
+        "php": ">=5.4.0",
         "yiisoft/yii2": "*",
         "yiisoft/yii2-bootstrap": "*",
         "2amigos/yii2-grid-view-library": "*",
@@ -24,14 +24,18 @@
         "kartik-v/yii2-export": "@dev",
         "kartik-v/yii2-mpdf": "dev-master",
         "nex/yii2-datepicker": "*",
-        "dvizh/yii2-bootstrap": "*"
+        "udokmeci/yii2-phone-validator" : "~1.0.1"
+    },
+    "require-dev": {
+        "yiisoft/yii2-debug": "*",
+        "yiisoft/yii2-gii": "*"
     },
     "config": {
         "process-timeout": 1800
     },
     "autoload": {
         "psr-4": {
-            "dvizh\\order\\": "src/"
+            "dvizh\\order\\": "src\\"
         }
     },
     "extra": {

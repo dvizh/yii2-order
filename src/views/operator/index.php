@@ -110,11 +110,9 @@ $columns[] = [
         return  Html::tag('span', Yii::$app->getModule('order')->orderStatuses[$model->status], ['class' => 'status_'.$model->status]);
     }
 ];
-        
 ?>
 
 <div class="order-index">
-
     <style>
         .operatorka tr {
             font-size: 13px;
@@ -160,14 +158,13 @@ $columns[] = [
     <script>
     window.onload = function() {
         setInterval(function() {
-            console.log($('.operatorka .pagination .active a').html());
-            if($('.pagination .active a').html() == '1') {
+            if($('.pagination .active a').html() == '1' | !$('.pagination .active a').html()) {
                 $('.operator-update').click();
             }
             
         }, 5000);
         
-        $(document).on('click', '.operatorka td', function() {
+        $(document).on('click', '.operatorka tbody td', function() {
             $('#operatorkaModal .modal-body').html('<iframe src="'+$(this).parent('tr').find('.view-url').data('href')+'"></iframe>');
             $('#operatorkaModal').modal().show();
         });
@@ -178,13 +175,13 @@ $columns[] = [
         <div class="box-body">
             <div class="order-list operatorka">
                 <?php Pjax::begin(); ?>
-                <a href="<?=Url::toRoute(['/order/operator/index']);?>" class="operator-update"> <i class="glyphicon glyphicon-refresh"></i> Обновить</a>
-                <?=  \kartik\grid\GridView::widget([
-                    'export' => false,
-                    'dataProvider' => $dataProvider,
-                    'filterModel' => $searchModel,
-                    'columns' => $columns,
-                ]); ?>
+                    <a href="<?=Url::toRoute(['/order/operator/index']);?>" class="operator-update"> <i class="glyphicon glyphicon-refresh"></i> Обновить</a>
+                    <?=  \kartik\grid\GridView::widget([
+                        'export' => false,
+                        'dataProvider' => $dataProvider,
+                        'filterModel' => $searchModel,
+                        'columns' => $columns,
+                    ]); ?>
                 <?php Pjax::end(); ?>
             </div>
         </div>

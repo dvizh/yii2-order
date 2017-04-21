@@ -1,8 +1,6 @@
 <?php
-
 namespace dvizh\order\widgets;
 
-use yii\helpers\Html;
 use yii\helpers\Url;
 use dvizh\order\models\Order;
 use dvizh\order\models\PaymentType;

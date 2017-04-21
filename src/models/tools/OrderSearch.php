@@ -26,11 +26,11 @@ class OrderSearch extends Order
     {
         $query = Order::find();
 
-		$query->joinWith('elementsRelation')->groupBy('order.id');
-		
-		if($elementTypes = yii::$app->request->get('element_types')) {
-			$query->andFilterWhere(['order_element.model' => $elementTypes])->groupBy('order.id');
-		}
+        $query->joinWith('elementsRelation')->groupBy('order.id');
+        
+        if($elementTypes = yii::$app->request->get('element_types')) {
+            $query->andFilterWhere(['order_element.model' => $elementTypes])->groupBy('order.id');
+        }
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -67,66 +67,6 @@ class OrderSearch extends Order
                 ->andFilterWhere(['like', 'email', $this->email])
                 ->andFilterWhere(['like', 'date', $this->date])
                 ->andFilterWhere(['like', 'time', $this->time]);
-
-        if(yii::$app->request->get('promocode')) {
-            $query->andWhere("promocode != ''");
-            $query->andWhere("promocode IS NOT NULL");
-        }
-
-        //Убрать это все в контроллер
-        if($customField = yii::$app->request->get('order-custom-field')) {
-            $orderIds = [];
-            foreach($customField as $id => $str) {
-				if(!empty($str)) {
-					if($values = FieldValue::find()->select('order_id')->where(['field_id' => $id])->andWhere(['LIKE', 'value', $str])->all()) {
-						foreach($values as $value) {
-							$orderIds[] = $value->order_id;
-						}
-					}
-				}
-            }
-			
-			if($orderIds) {
-				$query->andWhere(['order.id' => $orderIds]);           
-			}
-        }
-
-        $dateStart = yii::$app->request->get('date_start');
-        
-        if($dateStart) {
-            $dateStop = yii::$app->request->get('date_stop');
-            if($dateStop) {
-                $dateStop = date('Y-m-d', strtotime($dateStop));
-            }
-            
-            $dateStart = date('Y-m-d', strtotime($dateStart));
-
-            if($dateStart == $dateStop) {
-                $query->andWhere(['DATE_FORMAT(date, "%Y-%m-%d")' => $dateStart]);
-            } else {
-                if(!$dateStop) {
-                    $query->andWhere('DATE_FORMAT(date, "%Y-%m-%d") = :dateStart', [':dateStart' => $dateStart]);
-                } else {
-                    $query->andWhere('date >= :dateStart', [':dateStart' => $dateStart]);
-                }
-                
-                if($dateStop = yii::$app->request->get('date_stop')) {
-                    $dateStop = date('Y-m-d', strtotime($dateStop));
-                    $query->andWhere('date <= :dateStop', [':dateStop' => $dateStop]);
-                }
-            }
-        } else {
-            if($timeStart = yii::$app->request->get('time_start')) {
-                $query->andWhere('date >= :timeStart', [':timeStart' => $timeStart]);
-            }
-            
-            if($timeStop = yii::$app->request->get('time_stop')) {
-                if(urldecode($timeStop) == '0000-00-00 00:00:00') {
-                    $timeStop = date('Y-m-d H:i:s');
-                }
-                $query->andWhere('date <= :timeStop', [':timeStop' => $timeStop]);
-            }
-        }
 
         return $dataProvider;
     }

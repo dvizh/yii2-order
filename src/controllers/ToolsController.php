@@ -3,6 +3,7 @@ namespace dvizh\order\controllers;
 
 use yii;
 use yii\web\Controller;
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\filters\AccessControl;
 
@@ -22,27 +23,25 @@ class ToolsController  extends Controller
             ],
         ];
     }
+
+    public function actionUpdateShippingType()
+    {
+        $shippingTypeId = (int)yii::$app->request->post('shipping_type_id');
+        yii::$app->session->set('orderShippingType', $shippingTypeId);
+        
+        die(json_encode([
+            'total' => yii::$app->cart->cost,
+        ]));
+    }
+
     public function actionAjaxElementsList()
     {
-        $model = yii::createObject('\dvizh\order\services\Order')->getById(yii::$app->request->post('orderId'));
+        $model = yii::$app->order->get(yii::$app->request->post('orderId'));
 
-        $elements = '';
-
-        if  ($model->promocode) {
-            $promocode = yii::$app->promocode->checkExists($model->promocode);
-            if  ($promocode->type === 'quantum') {
-                $discountType = '';
-            } else {
-                $discountType = '%';
-            }
-            $elements .= Html::tag('div', '<strong>'.$promocode->code.'</strong>');
-            $elements .= Html::tag('div', '<strong>'.$promocode->discount.'</strong> ' . $discountType);
-        }
-
-        $elements .= Html::ul($model->elements, ['item' => function($item, $index) {
+        $elements = Html::ul($model->elements, ['item' => function($item, $index) {
             return Html::tag(
                 'li',
-                "{$item->getProduct()->getName()} - {$item->getPrice()}x{$item->count}",
+                "{$item->getModel()->getCartName()} - {$item->base_price} {$this->module->currency}x{$item->count}",
                 ['class' => 'post']
             );
         }]);

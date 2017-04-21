@@ -2,7 +2,7 @@
 namespace dvizh\order;
 
 use dvizh\order\models\Order as OrderModel;
-
+use dvizh\order\interfaces\Element as ElementInterface;
 use yii\base\Component;
 use yii\db\Query;
 use yii;
@@ -16,7 +16,7 @@ class Order extends Component
     {
         parent::init();
     }
-    
+
     private function buildQuery($query)
     {
         if($this->organization_id) {
@@ -82,7 +82,7 @@ class Order extends Component
         }
         
         $query = $this->orderFinder()
-            ->andWhere('date >= :dateStart AND date <= :dateStop', [':dateStart' => $dateStart, ':dateStop' => $dateStop])
+            ->andWhere('DATE_FORMAT(date,\'%Y-%m-%d\') >= :dateStart AND DATE_FORMAT(date,\'%Y-%m-%d\') <= :dateStop', [':dateStart' => $dateStart, ':dateStop' => $dateStop])
             ->orderBy('timestamp ASC');
         
         if($where) {
@@ -148,7 +148,7 @@ class Order extends Component
         if($dateStart == $dateStop) {
             $query->andWhere('DATE_FORMAT(date,\'%Y-%m-%d\') = :date', [':date' => $dateStart]);
         } else {
-            $query->andWhere('date >= :dateStart AND date <= :dateStop', [':dateStart' => $dateStart, ':dateStop' => $dateStop]);
+            $query->andWhere('DATE_FORMAT(date,\'%Y-%m-%d\') >= :dateStart AND DATE_FORMAT(date,\'%Y-%m-%d\') <= :dateStop', [':dateStart' => $dateStart, ':dateStop' => $dateStop]);
         }
 
         if($where) {

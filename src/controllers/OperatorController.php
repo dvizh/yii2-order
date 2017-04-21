@@ -91,7 +91,7 @@ class OperatorController  extends Controller
     
     protected function findModel($id)
     {
-        $orderModel = Order;
+        $orderModel = new Order;
         
         if (($model = $orderModel::findOne($id)) !== null) {
             return $model;

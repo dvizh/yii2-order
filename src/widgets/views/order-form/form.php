@@ -9,18 +9,13 @@ use yii\widgets\ActiveForm;
     </script>
 <?php } ?>
 <div class="dvizh_order_form">
-    <?php $form = ActiveForm::begin(['action' => Url::toRoute(['/order/order/customer-create'])]); ?>
-    
-        <div style="display: none;">
-            <?php if(yii::$app->has('organization') && $organization = yii::$app->organization->get()) { ?>
-                <?= $form->field($orderModel, 'organization_id')->label(false)->textInput(['value' => $organization->id]) ?>
-            <?php } ?>
-        </div>
-    
+    <?php $form = ActiveForm::begin(['action' => Url::toRoute(['/order/order/create'])]); ?>
+        <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
+
         <div class="row">
-            <div class="col-lg-6"><?= $form->field($orderModel, 'client_name')->textInput(['required' => true]) ?></div>
-            <div class="col-lg-3"><?= $form->field($orderModel, 'phone')->textInput(['required' => true]) ?></div>
-            <div class="col-lg-3"><?= $form->field($orderModel, 'email')->textInput(['required' => true, 'type' => 'email']) ?></div>
+            <div class="col-lg-6"><?= $form->field($orderModel, 'client_name')->textInput() ?></div>
+            <div class="col-lg-3"><?= $form->field($orderModel, 'phone')->textInput() ?></div>
+            <div class="col-lg-3"><?= $form->field($orderModel, 'email')->textInput() ?></div>
         </div>
 
         <div class="row">

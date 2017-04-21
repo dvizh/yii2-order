@@ -40,8 +40,8 @@ class ElementController extends Controller
         $module = $this->module;
         $orderEvent = new ElementEvent(['model' => $model, 'orderModel' => $model->order, 'productModel' => $model->getModel()]);
         $this->module->trigger($module::EVENT_ELEMENT_DELETE, $orderEvent);
-
-        yii::createObject(['class' => '\dvizh\order\logic\ElementCancel', 'elementId' => $model->id])->execute();
+        
+        yii::$app->order->cancelElement($model);
 
         return $this->redirect(Yii::$app->request->referrer);
     }

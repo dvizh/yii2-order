@@ -1,9 +1,11 @@
 <?php
+
 namespace dvizh\order\models;
 
 use yii;
+use dvizh\order\interfaces\OrderElement as ElementInterface;
 
-class Element extends \yii\db\ActiveRecord implements \dvizh\app\interfaces\entities\OrderElement
+class Element extends \yii\db\ActiveRecord implements ElementInterface
 {
     public static function tableName()
     {
@@ -38,34 +40,51 @@ class Element extends \yii\db\ActiveRecord implements \dvizh\app\interfaces\enti
         ];
     }
 
-    public function setOrder(\dvizh\app\interfaces\entities\Order $order)
+    public function setOrderId($orderId)
     {
-        $this->order_id = $order->getId();
+        $this->order_id = $orderId;
+        
+        return $this;
     }
     
     public function setAssigment($isAssigment)
     {
         $this->is_assigment = $isAssigment;
+        
+        return $this;
     }
     
     public function setModelName($modelName)
     {
         $this->model = $modelName;
+        
+        return $this;
     }
     
     public function setName($name)
     {
         $this->name = $name;
+        
+        return $this;
     }
     
     public function setItemId($itemId)
     {
         $this->item_id = $itemId;
+        
+        return $this;
     }
     
     public function setCount($count)
     {
         $this->count = $count;
+    }
+    
+    public function setBasePrice($basePrice)
+    {
+        $this->base_price = $basePrice;
+        
+        return $this;
     }
     
     public function setPrice($price)
@@ -131,7 +150,7 @@ class Element extends \yii\db\ActiveRecord implements \dvizh\app\interfaces\enti
     
     public function saveData()
     {
-        return $this->save(false);
+        return $this->save();
     }
     
     public function getId()
@@ -148,18 +167,43 @@ class Element extends \yii\db\ActiveRecord implements \dvizh\app\interfaces\enti
     {
         return $this->count;
     }
-
-    public function getOrder() : \dvizh\app\interfaces\entities\Order
+    
+    public function getProduct()
+    {
+        $modelStr = $this->model;
+        $productModel = new $modelStr();
+        
+        return $this->hasOne($productModel::className(), ['id' => 'item_id'])->one();
+    }
+    
+    public function getOrder()
     {
         return $this->hasOne(Order::className(), ['id' => 'order_id']);
     }
 
-    public function getProduct() : \dvizh\app\interfaces\entities\Goods
+    public function getModel($withCartElementModel = true)
     {
-        $modelStr = $this->model;
-        $productModel = new $modelStr();
+        if(!$withCartElementModel) {
+            return $this->model;
+        }
 
-        return $this->hasOne($productModel::className(), ['id' => 'item_id'])->one();
+        if(is_string($this->model)) {
+            if(class_exists($this->model)) {
+                $model = '\\'.$this->model;
+                $productModel = new $model();
+                if ($productModel = $productModel::findOne($this->item_id)) {
+                    $model = $productModel;
+                } else {
+                    throw new \yii\base\Exception('Element model do not found');
+                }
+            } else {
+                //throw new \yii\base\Exception('Unknow element model');
+            }
+        } else {
+            $model = $this->model;
+        }
+        
+        return $model;
     }
     
     public static function editField($id, $name, $value)

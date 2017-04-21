@@ -19,7 +19,7 @@ use yii\widgets\DetailView;
     <?php } ?>
     
      <?php if($model->email) { ?>
-        <li><?=$model->email;?></li>
+        <li><?=Html::a($model->email, 'mailto:'.$model->email);?></li>
     <?php } ?>
  
     <?php if($model->comment) { ?>
@@ -57,7 +57,7 @@ use yii\widgets\DetailView;
         <?php foreach($model->elements as $element) { ?>
             <tr>
                 <td>
-                    <?=$element->product->getName(); ?>
+                    <?=$element->product->getCartName(); ?>
                     <?php if($element->description) { echo "({$element->description})"; } ?>
                     <?php
                     if($options = json_decode($element->options)) {
