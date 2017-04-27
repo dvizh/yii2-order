@@ -5,7 +5,7 @@ $this->title = yii::t('order', 'Orders');
 
 $this->params['breadcrumbs'][] = $this->title;
 
-\dvizh\client\assets\BackendAsset::register($this);
+\dvizh\shop\assets\BackendAsset::register($this);
 
 ?>
 <div class="model-index">

@@ -9,8 +9,6 @@ $this->params['breadcrumbs'][] = Yii::t('order', 'Update');
 ?>
 <div class="field-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <?= $this->render('_form', [
         'model' => $model,
     ]) ?>

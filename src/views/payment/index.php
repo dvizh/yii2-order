@@ -9,7 +9,6 @@ $this->title = yii::t('order', 'Payments');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="payment-index">
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <div class="row">
         <div class="col-lg-2">

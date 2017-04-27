@@ -21,8 +21,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 <div class="order-stat">
-    <h1><?=$this->title;?></h1>
-    
     <div class="container">
         <?php foreach($years as $year) { ?>
             <h2><?=$year;?></h2>

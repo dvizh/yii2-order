@@ -13,8 +13,6 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="field-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <div class="row">
         <div class="col-lg-2">
             <?= Html::a(Yii::t('order', 'Create shipping type'), ['create'], ['class' => 'btn btn-success']) ?>

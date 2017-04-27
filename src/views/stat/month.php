@@ -17,7 +17,6 @@ $this->params['breadcrumbs'][] = $month;
 
 ?>
 <div class="order-stat">
-    <h1><?=yii::t('order', 'Order statistics');?></h1>
     <div class="row">
         <div class="col-lg-2">
             

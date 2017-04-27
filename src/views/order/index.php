@@ -214,9 +214,6 @@ $columns[] = ['class' => 'yii\grid\ActionColumn', 'template' => '{view} {delete}
 $order = yii::$app->order;
 ?>
 
-
-<h1><?=yii::t('order', 'Orders');?></h1>
-
 <div class="informer-widget">
     <div class="panel panel-primary">
         <div class="panel-heading">

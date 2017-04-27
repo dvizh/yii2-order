@@ -8,8 +8,6 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('order', 'Payment types'), '
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="field-create">
-    
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,
