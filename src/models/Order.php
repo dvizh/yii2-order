@@ -24,6 +24,7 @@ class Order extends \yii\db\ActiveRecord implements OrderInterface
     public function rules()
     {
         return [
+            [['client_name'], 'required'],
             [['phone', 'email'], 'emailAndPhoneValidation', 'skipOnEmpty' => false],
             [['date', 'payment', 'comment', 'delivery_time', 'address'], 'string'],
             ['status', 'in', 'range' => array_keys(yii::$app->getModule('order')->orderStatuses)],

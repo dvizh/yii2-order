@@ -57,7 +57,7 @@ class OrderForm extends \yii\base\Widget
             }
         }
         
-        $this->getView()->registerJs("dvizh.order.updateShippingType = '".Url::toRoute(['/order/tools/update-shipping-type'])."';");
+        $this->getView()->registerJs("dvizh.orderForm.updateShippingType = '".Url::toRoute(['/order/tools/update-shipping-type'])."';");
         
         return $this->render($this->view, [
             'orderModel' => $orderModel,

@@ -4,9 +4,10 @@ use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 ?>
 <?php if(Yii::$app->session->hasFlash('orderError')) { ?>
-    <script>
-    alert('<?= Yii::$app->session->getFlash('orderError') ?>');
-    </script>
+    <?php
+    $errors = Yii::$app->session->getFlash('orderError');
+    $orderModel->addErrors(unserialize($errors));
+    ?>
 <?php } ?>
 <div class="dvizh_order_form">
     <?php $form = ActiveForm::begin(['action' => Url::toRoute(['/order/order/create'])]); ?>

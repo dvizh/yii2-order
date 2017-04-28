@@ -3,6 +3,7 @@ if (typeof dvizh == "undefined" || !dvizh) {
 }
 
 dvizh.orderForm = {
+    updateShippingType: null,
     init: function() {
 
     },

@@ -11,7 +11,7 @@ class Asset extends AssetBundle
     ];
 
     public $js = [
-        'js/scripts.js',
+        //'js/scripts.js',
     ];
 
     public $css = [

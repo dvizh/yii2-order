@@ -216,7 +216,8 @@ class OrderController  extends Controller
 
                 return $this->redirect([yii::$app->getModule('order')->successUrl, 'id' => $model->id, 'payment' => $model->payment_type_id]);
             } else {
-                yii::$app->session->setFlash('orderError', yii::t('order', 'Error (check required fields)'));
+                yii::$app->session->setFlash('orderError', yii::t('order', serialize($model->getErrors())));
+
                 return $this->redirect(yii::$app->request->referrer);
             }
         } else {
