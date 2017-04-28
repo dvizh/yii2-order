@@ -4,7 +4,7 @@ Yii2-order
 
 Функционал:
 
-* Добавление заказа, просмотр и управление заказами в админке
+* Просмотр и управление заказами в админке
 * Управление полями заказа в админке
 * Управление способами доставки и оплаты в админке
 
@@ -36,13 +36,65 @@ php yii migrate --migrationPath=vendor/dvizh/yii2-order/src/migrations
 
 Далее, связываем модуль с корзиной. Устанавливаем [dvizh/yii2-cart](https://github.com/dvizh/yii2-cart) и добавляем в начало конфига вашего приложения:
 
+Создаем аспект:
+
 ```
-yii::$container->set('dvizh\order\interfaces\Cart', 'dvizh\order\drivers\dvizhCart');
+<?php
+namespace common\aspects;
+
+use dvizh\order\models\Element;
+use Yii;
+
+class OrderFilling extends \yii\base\Behavior
+{
+    public function events()
+    {
+        return [
+            'create' => 'putElements'
+        ];
+    }
+
+    public function putElements($event)
+    {
+        $order = $event->model;
+
+        foreach(yii::$app->cart->elements as $element) {
+            $elementModel = new Element;
+
+            $elementModel->setOrderId($order->id);
+            $elementModel->setAssigment($order->is_assigment);
+            $elementModel->setModelName($element->getModelName());
+            $elementModel->setName($element->getName());
+            $elementModel->setItemId($element->getItemId());
+            $elementModel->setCount($element->getCount());
+            $elementModel->setBasePrice($element->getPrice(false));
+            $elementModel->setPrice($element->getPrice());
+            $elementModel->setOptions(json_encode($element->getOptions()));
+            $elementModel->setDescription('');
+            $elementModel->saveData();
+        }
+
+        $order->base_cost = 0;
+        $order->cost = 0;
+
+        foreach($order->elements as $element) {
+            $order->base_cost += ($element->base_price*$element->count);
+            $order->cost += ($element->price*$element->count);
+        }
+        $order->save();
+
+        yii::$app->cart->truncate();
+    }
+}
 ```
 
-Чтобы связать модуль с другой корзиной:
+Чтобы связать модуль с другой корзиной, присваиваем аспект модулю заказа в конфиге:
 ```
-yii::$container->set('dvizh\order\interfaces\Cart', 'app\objects\Cart');
+        'order' => [
+            'class' => 'dvizh\order\Module',
+            //...
+            'as order_filling' => '\common\aspects\OrderFilling',
+        ],
 ```
 
 app\objects\Cart должен содержать класс, имплементирующий \dvizh\order\interfaces\Cart.
@@ -176,5 +228,3 @@ _**Поиск по заказам**_
 ![3](https://cloud.githubusercontent.com/assets/27691515/25094387/91f8d224-239f-11e7-8ec4-88c93598121e.png)
 _**Статистика**_
 ![4](https://cloud.githubusercontent.com/assets/27691515/25094384/91f52e44-239f-11e7-803b-f3454a74eed1.png)
-_**Добавление заказа**_
-![5](https://cloud.githubusercontent.com/assets/27691515/25094386/91f61e80-239f-11e7-8ce1-5e8e2e2471d3.png)

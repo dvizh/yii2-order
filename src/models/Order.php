@@ -94,7 +94,21 @@ class Order extends \yii\db\ActiveRecord implements OrderInterface
         
         return $this;
     }
-    
+
+    public function cancel()
+    {
+        $this->is_deleted = 1;
+
+        return $this->save(false);
+    }
+
+    public function restore()
+    {
+        $this->is_deleted = 0;
+
+        return $this->save(false);
+    }
+
     public function saveData()
     {
         return $this->save(false);

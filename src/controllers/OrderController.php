@@ -53,6 +53,8 @@ class OrderController  extends Controller
 
         $dataProvider = $searchModel->search($searchParams);
 
+        $dataProvider->query->orderBy('id DESC');
+
         if($tab == 'assigments') {
             $dataProvider->query->andWhere(['order.is_assigment' => '1']);
         } else {
@@ -269,7 +271,7 @@ class OrderController  extends Controller
         $orderEvent = new OrderEvent(['model' => $model]);
         $this->module->trigger($module::EVENT_ORDER_DELETE, $orderEvent);
 
-        yii::$app->order->cancel($model);
+        $model->cancel();
 
         return $this->redirect(['index']);
     }
