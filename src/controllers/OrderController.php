@@ -194,6 +194,16 @@ class OrderController  extends Controller
                 $orderEvent = new OrderEvent(['model' => $model]);
                 $this->module->trigger($module::EVENT_ORDER_CREATE, $orderEvent);
 
+                if($fieldValues = yii::$app->request->post('FieldValue')['value']) {
+                    foreach($fieldValues as $field_id => $fieldValue) {
+                        $fieldValueModel = new FieldValue;
+                        $fieldValueModel->value = $fieldValue;
+                        $fieldValueModel->order_id = $model->id;
+                        $fieldValueModel->field_id = $field_id;
+                        $fieldValueModel->save();
+                    }
+                }
+
                 if($paymentType = $model->paymentType) {
                     $payment = new Payment;
                     $payment->order_id = $model->id;
