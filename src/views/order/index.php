@@ -237,7 +237,13 @@ $order = yii::$app->order;
                 <div class="order-search-body">
                     <div class="panel-body">
                         <form action="<?=Url::toRoute(['/order/order/index']);?>" class="row search">
-                            <input type="hidden" name="tab" value="<?=$tab;?>" />
+                            <?php
+                            foreach(yii::$app->request->get() as $key => $value) {
+                                if(!is_array($value)) {
+                                    echo Html::input('hidden', Html::encode($key), Html::encode($value));
+                                }
+                            }
+                            ?>
                             <div class="col-md-4">
                                 <label><?=yii::t('order', 'Date');?></label>
                                 <div class="row">
