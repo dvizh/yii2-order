@@ -14,6 +14,7 @@ class ToolsController  extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
+                'only' => ['ajax-elements-list'],
                 'rules' => [
                     [
                         'allow' => true,
