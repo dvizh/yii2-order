@@ -189,11 +189,7 @@ $columns[] = [
             return null;
         }
 
-        if (in_array($model->status, ['new', 'halfpayed'])) {
-            $return = Yii::$app->getModule('order')->orderStatuses[$model->status].'<br>'.$modalHtml;
-        } else {
-            $return = Yii::$app->getModule('order')->orderStatuses[$model->status];
-        }
+        $return = Yii::$app->getModule('order')->orderStatuses[$model->status];
 
         return $return;
     }
