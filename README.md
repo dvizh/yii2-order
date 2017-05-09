@@ -34,7 +34,7 @@ php composer update
 php yii migrate --migrationPath=vendor/dvizh/yii2-order/src/migrations
 ```
 
-Далее, связываем модуль с корзиной. Устанавливаем [dvizh/yii2-cart](https://github.com/dvizh/yii2-cart) и добавляем в начало конфига вашего приложения:
+Далее, связываем модуль с корзиной. Устанавливаем [dvizh/yii2-cart](https://github.com/dvizh/yii2-cart)
 
 Создаем аспект:
 
@@ -88,7 +88,7 @@ class OrderFilling extends \yii\base\Behavior
 }
 ```
 
-Чтобы связать модуль с другой корзиной, присваиваем аспект модулю заказа в конфиге:
+Чтобы связать модуль заказа с корзиной, присваиваем аспект модулю заказа в конфиге:
 ```
         'order' => [
             'class' => 'dvizh\order\Module',
@@ -96,8 +96,6 @@ class OrderFilling extends \yii\base\Behavior
             'as order_filling' => '\common\aspects\OrderFilling',
         ],
 ```
-
-app\objects\Cart должен содержать класс, имплементирующий \dvizh\order\interfaces\Cart.
 
 Установка как модуля
 ---------------------------------
