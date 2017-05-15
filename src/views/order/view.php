@@ -34,30 +34,7 @@ Asset::register($this);
             <?=dvizh\order\widgets\ChangeStatus::widget(['model' => $model]);?>
         </div>
         <div class="col-md-6">
-            <?php
-            if(class_exists('\halumein\cashbox\widgets\RepaymentForm') && yii::$app->getModule('cashbox')) {
-                ?>
 
-                <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#payment-<?=$model->id;?>">Оплата</button>
-
-                <div id="payment-<?=$model->id;?>" class="modal fade" role="dialog" data-role="modal-repayment">
-                    <div class="modal-dialog" style="width: 430px;">
-
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Оплата заказа № <?=$model->id;?></h4>
-                            </div>
-                            <div class="modal-body">
-                                <?=\halumein\cashbox\widgets\RepaymentForm::widget(['useAjax' => true, 'order' => $model]); ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <?php
-            }
-            ?>
         </div>
 
     </div>
