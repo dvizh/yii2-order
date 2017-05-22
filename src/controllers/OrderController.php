@@ -56,9 +56,9 @@ class OrderController  extends Controller
         $dataProvider->query->orderBy('id DESC');
 
         if($tab == 'assigments') {
-            $dataProvider->query->andWhere(['order.is_assigment' => '1']);
+            $dataProvider->query->andWhere(['{{%order}}.is_assigment' => '1']);
         } else {
-            $dataProvider->query->andWhere('(order.is_assigment IS NULL OR order.is_assigment = 0)');
+            $dataProvider->query->andWhere('({{%order}}.is_assigment IS NULL OR {{%order}}.is_assigment = 0)');
         }
 
         $this->setCustomQueryParams($dataProvider->query);

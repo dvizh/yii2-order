@@ -7,7 +7,7 @@ class Payment extends \yii\db\ActiveRecord
 {
     public static function tableName()
     {
-        return 'order_payment';
+        return '{{%order_payment}}';
     }
 
     public function rules()
