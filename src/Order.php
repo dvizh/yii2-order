@@ -23,12 +23,12 @@ class Order extends Component
             $query->andWhere('(organization_id IS NULL OR organization_id = :organization_id)', [':organization_id' => $this->organization_id]);
         }
         
-        $query->andWhere('(order.is_deleted IS NULL OR order.is_deleted != 1)');
+        $query->andWhere('({{%order}}.is_deleted IS NULL OR {{%order}}.is_deleted != 1)');
         
         if($this->is_assigment) {
-            $query->andWhere('order.is_assigment = 1');
+            $query->andWhere('{{%order}}.is_assigment = 1');
         } else {
-            $query->andWhere('(order.is_assigment IS NULL OR order.is_assigment != 1)');
+            $query->andWhere('({{%order}}.is_assigment IS NULL OR {{%order}}.is_assigment != 1)');
         }
         
         return $query;
@@ -36,7 +36,7 @@ class Order extends Component
     
     private function orderQuery()
     {
-        $return = (new Query())->from('order');
+        $return = (new Query())->from('{{%order}}');
 
         return $this->buildQuery($return);
     }
@@ -102,7 +102,7 @@ class Order extends Component
         
         $query = $this->orderQuery();
         $query->addSelect(['sum(cost) as total, sum(count) as count_elements, COUNT(DISTINCT id) as count_orders'])
-                ->from(['order'])
+                ->from(['{{%order}}'])
                 ->andWhere('DATE_FORMAT(date, "%Y-%m") = :date', [':date' => $month]);
 
         if($where) {
@@ -121,7 +121,7 @@ class Order extends Component
         $query = $this->orderQuery();
 
         $query->addSelect(['sum(cost) as total, sum(count) as count_elements, COUNT(DISTINCT id) as count_orders'])
-                ->from(['order'])
+                ->from(['{{%order}}'])
                 ->andWhere(' DATE_FORMAT(date, "%Y-%m-%d") = :date', [':date' => $date]);
 
         if($where) {
@@ -143,7 +143,7 @@ class Order extends Component
 
         $query = $this->orderQuery();
         $query->addSelect(['sum(cost) as total, sum(count) as count_elements, COUNT(DISTINCT id) as count_orders'])
-                ->from(['order']);
+                ->from(['{{%order}}']);
         
         if($dateStart == $dateStop) {
             $query->andWhere('DATE_FORMAT(date,\'%Y-%m-%d\') = :date', [':date' => $dateStart]);
@@ -171,10 +171,10 @@ class Order extends Component
         $query = $this->orderQuery();
         $query->addSelect(['sum(e.count*e.price) as total, sum(e.count) as count_elements, COUNT(DISTINCT order_id) as count_orders'])
                 ->from (['order_element e'])
-                ->leftJoin('order', 'order.id = e.order_id')
+                ->leftJoin('{{%order}}', '{{%order}}.id = e.order_id')
                 //->groupBy('order.id')
-                ->andWhere('order.is_assigment != 1')
-                ->andWhere('order.date >= :dateStart AND order.date <= :dateStop', [':dateStart' => $dateStart, ':dateStop' => $dateStop])
+                ->andWhere('{{%order}}.is_assigment != 1')
+                ->andWhere('{{%order}}.date >= :dateStart AND {{%order}}.date <= :dateStop', [':dateStart' => $dateStart, ':dateStop' => $dateStop])
                 ->andWhere(['e.model' => $model]);
 
         if($where) {

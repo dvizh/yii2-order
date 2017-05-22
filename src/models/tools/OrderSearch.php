@@ -26,10 +26,10 @@ class OrderSearch extends Order
     {
         $query = Order::find();
 
-        $query->joinWith('elementsRelation')->groupBy('order.id');
+        $query->joinWith('elementsRelation')->groupBy('{{%order}}.id');
         
         if($elementTypes = yii::$app->request->get('element_types')) {
-            $query->andFilterWhere(['order_element.model' => $elementTypes])->groupBy('order.id');
+            $query->andFilterWhere(['{{%order_element}}.model' => $elementTypes])->groupBy('{{%order}}.id');
         }
 
         $dataProvider = new ActiveDataProvider([
@@ -57,7 +57,7 @@ class OrderSearch extends Order
         ]);
         
         if(isset($this->is_deleted)) {
-            $query->andWhere(['order.is_deleted' => $this->is_deleted]);
+            $query->andWhere(['{{%order}}.is_deleted' => $this->is_deleted]);
         }
 
         $query->andFilterWhere(['like', 'client_name', $this->client_name])
