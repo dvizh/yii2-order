@@ -13,13 +13,13 @@ Yii2-order
 Выполнить команду
 
 ```
-php composer require dvizh/yii2-order "*"
+php composer require dvizh/yii2-order "@dev"
 ```
 
 Или добавить в composer.json
 
 ```
-"dvizh/yii2-order": "*",
+"dvizh/yii2-order": "@dev",
 ```
 
 И выполнить
