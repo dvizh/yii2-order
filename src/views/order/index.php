@@ -153,9 +153,9 @@ foreach(Yii::$app->getModule('order')->orderColumns as $column) {
     } elseif(is_array($column) && isset($column['content']) && is_callable($column['content'])) {
         $column = [
             'label' => $column['label'],
-            'value' => function($model) use ($column) {
+            'content' => function($model) use ($column) {
                 $func = $column['content'];
-                return $func();
+                return $func($model);
             }
         ];
     }
