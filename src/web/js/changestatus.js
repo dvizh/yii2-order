@@ -6,8 +6,8 @@ dvizh.changestatus = {
     csrf: null,
     csrf_param: null,
     init: function() {
-        dvizh.changestatus.csrf = jQuery('meta[name=csrf-token]').attr("content");
-        dvizh.changestatus.csrf_param = jQuery('meta[name=csrf-param]').attr("content");
+        dvizh.changestatus.csrf = $('meta[name=csrf-token]').attr("content");
+        dvizh.changestatus.csrf_param = $('meta[name=csrf-param]').attr("content");
         $(document).on('change', ".dvizh-change-order-status", this.changeStatus);
     },
     changeStatus: function() {
@@ -19,7 +19,7 @@ dvizh.changestatus = {
         data['id'] = $(this).data('id');
         data[dvizh.changestatus.csrf_param] = dvizh.changestatus.csrf;
 
-        jQuery.post($(this).data('link'), data,
+        $.post($(this).data('link'), data,
             function(json) {
                 if(json.result == 'success') {
                     $(link).css('opacity', '1');
