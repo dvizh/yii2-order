@@ -215,7 +215,8 @@ class Order extends \yii\db\ActiveRecord implements OrderInterface
     
     public function getElementsRelation()
     {
-        return $this->hasMany(Element::className(), ['order_id' => 'id'])->where('(order_element.is_deleted IS NULL OR order_element.is_deleted != 1)');
+                return $this->hasMany(Element::className(), ['order_id' => 'id'])->where('({{%order_element}}.is_deleted IS NULL OR {{%order_element}}.is_deleted != 1)');
+
     }
     
     public function getElements($withModel = true)
