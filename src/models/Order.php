@@ -259,7 +259,7 @@ class Order extends \yii\db\ActiveRecord implements OrderInterface
         if($this->isNewRecord) {
             if(empty($this->date)) {
                 $this->date = date('Y-m-d H:i:s');
-            } else {
+            } elseif (empty($this->timestamp)) {
                 $this->timestamp = strtotime($this->date);
             }
         }
