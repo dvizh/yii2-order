@@ -61,6 +61,8 @@ class OrderController  extends Controller
             $dataProvider->query->andWhere('({{%order}}.is_assigment IS NULL OR {{%order}}.is_assigment = 0)');
         }
 
+        $hasAssignments = Order::find()->where(['is_assigment' => 1])->count();
+
         $this->setCustomQueryParams($dataProvider->query);
 
         $paymentTypes = ArrayHelper::map(PaymentType::find()->all(), 'id', 'name');
@@ -75,6 +77,7 @@ class OrderController  extends Controller
             'paymentTypes' => $paymentTypes,
             'module' => $this->module,
             'dataProvider' => $dataProvider,
+            'hasAssignments' => (int)$hasAssignments,
         ]);
     }
     

@@ -41,17 +41,19 @@ $columns[] = [
          'class' => 'show-details'
      ],
 ];
+if(Yii::$app->getModule('order')->showCountColumn){
+    $columns[] = [
+        'attribute' => 'count',
+        'label' => yii::t('order', 'Cnt'),
+        'contentOptions' => [
+            'class' => 'show-details'
+        ],
+        'content' => function($model) {
+            return $model->count;
+        }
+    ];
 
-$columns[] = [
-    'attribute' => 'count',
-    'label' => yii::t('order', 'Cnt'),
-    'contentOptions' => [
-        'class' => 'show-details'
-    ],
-    'content' => function($model) {
-        return $model->count;
-    }
-];
+ }
 
 $columns[] = [
     'attribute' => 'base_cost',
@@ -193,13 +195,13 @@ $columns[] = [
     ),
     'format' => 'raw',
     'value' => function($model) use ($module) {
-        if(!$model->status) {
-            return null;
-        }
+        // if(!$model->status) {
+        //     return null;
+        // }
+        //
+        // $return = Yii::$app->getModule('order')->orderStatuses[$model->status];
 
-        $return = Yii::$app->getModule('order')->orderStatuses[$model->status];
-
-        return $return;
+        return \dvizh\order\widgets\ChangeStatus::widget(['model' => $model]);
     }
 ];
 
@@ -312,15 +314,18 @@ $order = yii::$app->order;
                 </div>
             </div>
 
-            <div class="tabs row">
-                <div class="col-md-6">
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li <?php if($tab == 'orders') { ?>class="active"<?php } ?>><a href="<?=Url::toRoute(['/order/order/index', 'tab' => 'orders']);?>"><?=yii::t('order', 'Orders');?></a></li>
-                        <li <?php if($tab == 'assigments') { ?>class="active"<?php } ?>><a href="<?=Url::toRoute(['/order/order/index', 'tab' => 'assigments']);?>"><?=yii::t('order', 'Assigments');?></a></li>
-                    </ul>
-                </div>
-            </div>
-            
+
+            <?php if ($hasAssignments > 0) { ?>
+                <div class="tabs row">
+                    <div class="col-md-6">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li <?php if($tab == 'orders') { ?>class="active"<?php } ?>><a href="<?=Url::toRoute(['/order/order/index', 'tab' => 'orders']);?>"><?=yii::t('order', 'Orders');?></a></li>
+                                <li <?php if($tab == 'assigments') { ?>class="active"<?php } ?>><a href="<?=Url::toRoute(['/order/order/index', 'tab' => 'assigments']);?>"><?=yii::t('order', 'Assigments');?></a></li>
+                                </ul>
+                            </div>
+                        </div>
+            <?php } ?>
+
             <div class="summary row">
                 <div class="col-md-4">
                     <h3>

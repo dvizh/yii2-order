@@ -63,7 +63,8 @@ class Module extends \yii\base\Module
     public $elementToOrderUrl = false;
 
     public $showPaymentColumn = false;
-    
+    public $showCountColumn = true;
+
     private $mail;
     
     public $discountDescriptionCallback = '';
