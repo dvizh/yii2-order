@@ -48,13 +48,16 @@ class OrderSearch extends Order
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
             'user_id' => $this->user_id,
             'payment' => $this->payment,
             'status' => $this->status,
             'promocode' => $this->promocode,
             'seller_user_id' => $this->seller_user_id,
         ]);
+        
+        if(isset($this->id)) {
+            $query->andWhere(['{{%order}}.id' => $this->id]);
+        }        
         
         if(isset($this->is_deleted)) {
             $query->andWhere(['{{%order}}.is_deleted' => $this->is_deleted]);
