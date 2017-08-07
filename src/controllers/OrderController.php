@@ -245,6 +245,10 @@ class OrderController  extends Controller
             $model = Order::findOne($id);
             $status = yii::$app->request->post('status');
             if($model->setStatus($status)->save(false)) {
+                
+                $orderEvent = new OrderEvent(['model' => $model]);
+                $this->module->trigger($module::EVENT_ORDER_UPDATE_STATUS, $orderEvent);
+                
                 die(json_encode(['result' => 'success']));
             } else {
                 die(json_encode(['result' => 'fail', 'error' => 'enable to save']));
