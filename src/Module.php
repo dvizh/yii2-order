@@ -9,6 +9,7 @@ class Module extends \yii\base\Module
     const EVENT_ORDER_CREATE = 'create';
     const EVENT_ORDER_DELETE = 'delete';
     const EVENT_ELEMENT_DELETE = 'delete_element';
+    const EVENT_ORDER_UPDATE_STATUS = 'update_status';
 
     public $countryCode = 'RU';
 
