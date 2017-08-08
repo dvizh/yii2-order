@@ -324,7 +324,34 @@ class OrderController  extends Controller
 
         return json_encode($json);
     }
+    
+    public function actionOrderSimpleCreateAjax()
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
+        $model = new SimpleOrder();
+
+        if ($status = \Yii::$app->request->post('status')) {
+            $model->status = $status;
+        }
+
+        if ($model->save()) {
+
+            $module = Yii::$app->getModule('order');
+            $orderEvent = new \dvizh\order\events\OrderEvent(['model' => $model, 'elements' => $model->elements]);
+            $module->trigger($module::EVENT_ORDER_CREATE, $orderEvent);
+
+            return [
+                'status' => 'success',
+                'message' => 'success'
+            ];
+
+        } else {
+            var_dump($model->getErrors());
+        }
+
+    }
+    
     protected function setCustomQueryParams($query)
     {
         if(yii::$app->request->get('promocode')) {
