@@ -246,6 +246,7 @@ class OrderController  extends Controller
             $status = yii::$app->request->post('status');
             if($model->setStatus($status)->save(false)) {
                 
+                $module = $this->module;
                 $orderEvent = new OrderEvent(['model' => $model]);
                 $this->module->trigger($module::EVENT_ORDER_UPDATE_STATUS, $orderEvent);
                 
