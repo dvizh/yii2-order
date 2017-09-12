@@ -56,7 +56,7 @@ class OrderController  extends Controller
 
         $dataProvider->query->joinWith('elementsRelation')->groupBy('{{%order}}.id');
 
-        if($elementName = yii::$app->request->get('elementName')) {
+        if($elementName = yii::$app->request->get('elementName') && strlen($elementName) > 2) {
             $dataProvider->query->andFilterWhere(['like', '{{%order_element}}.name', $elementName]);
         }
 
