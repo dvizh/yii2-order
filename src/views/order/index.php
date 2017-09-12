@@ -302,6 +302,21 @@ $order = yii::$app->order;
                                 </div>
                             </div>
 
+                            <div class="col-md-3">
+                                <label><?=yii::t('order', 'Element name');?></label>
+                                <?php if ($elementPossibleNames = \Yii::$app->getModule('order')->searchByElementNameArray) { ?>
+                                    <?= Html::dropDownList(
+                                            'elementName',
+                                            \Yii::$app->request->get('elementName'),
+                                            $elementPossibleNames,
+                                            [
+                                                'class' => 'form-control',
+                                                'prompt' => 'Элемент',
+                                            ]);
+                                        ?>
+                                <?php } ?>
+                            </div>
+
                             <div class="col-md-2">
                                 <label>&nbsp;</label>
                                 <div>
@@ -358,7 +373,7 @@ $order = yii::$app->order;
                     ?>
                 </div>
             </div>
-            
+
             <div class="order-list">
                 <?=  \kartik\grid\GridView::widget([
                     'export' => false,

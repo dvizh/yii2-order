@@ -150,4 +150,5 @@ return [
     'Deleted' => 'Удалено',
     'Phone or email is required' => 'Телефон или E-mail обязателен',
     'Search by date' => 'Поиск по дате',
+    'Element name' => 'Элемент',
 ];

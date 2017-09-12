@@ -54,7 +54,14 @@ class OrderController  extends Controller
 
         $dataProvider = $searchModel->search($searchParams);
 
-        $dataProvider->query->orderBy('id DESC');
+        $dataProvider->query->joinWith('elementsRelation')->groupBy('{{%order}}.id');
+
+        if($elementName = yii::$app->request->get('elementName')) {
+            $dataProvider->query->andFilterWhere(['like', '{{%order_element}}.name', $elementName]);
+        }
+
+
+        $dataProvider->query->orderBy('{{%order}}.id DESC');
 
         if($tab == 'assigments') {
             $dataProvider->query->andWhere(['{{%order}}.is_assigment' => '1']);
@@ -81,11 +88,11 @@ class OrderController  extends Controller
             'hasAssignments' => (int)$hasAssignments,
         ]);
     }
-    
+
     public function actionView($id)
     {
         $model = $this->findModel($id);
-        
+
         $searchModel = new ElementSearch;
         $params = yii::$app->request->queryParams;
         if(empty($params['ElementSearch'])) {
@@ -116,7 +123,7 @@ class OrderController  extends Controller
         $this->enableCsrfValidation = false;
 
         $model = Order::find()->orderBy('id DESC')->limit(1)->one();
-        
+
         $searchModel = new ElementSearch;
         $params = yii::$app->request->queryParams;
         if(empty($params['ElementSearch'])) {
@@ -140,7 +147,7 @@ class OrderController  extends Controller
             'model' => $model,
         ]);
     }
-    
+
     public function actionPrint($id)
     {
         $this->layout = 'print';
@@ -246,11 +253,11 @@ class OrderController  extends Controller
             $model = Order::findOne($id);
             $status = yii::$app->request->post('status');
             if($model->setStatus($status)->save(false)) {
-                
+
                 $module = $this->module;
                 $orderEvent = new OrderEvent(['model' => $model]);
                 $this->module->trigger($module::EVENT_ORDER_UPDATE_STATUS, $orderEvent);
-                
+
                 die(json_encode(['result' => 'success']));
             } else {
                 die(json_encode(['result' => 'fail', 'error' => 'enable to save']));
@@ -274,7 +281,7 @@ class OrderController  extends Controller
                     $fieldValueModel->save();
                 }
             }
-            
+
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
@@ -325,7 +332,7 @@ class OrderController  extends Controller
 
         return json_encode($json);
     }
-    
+
     public function actionOrderSimpleCreateAjax()
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -356,7 +363,7 @@ class OrderController  extends Controller
         }
 
     }
-    
+
     protected function setCustomQueryParams($query)
     {
         if(yii::$app->request->get('promocode')) {

@@ -44,31 +44,33 @@ class Module extends \yii\base\Module
 
     public $userModel = '\dvizh\client\models\Client';
     public $userSearchModel = '\dvizh\client\models\client\ClientSearch';
-    
+
     public $userModelCustomFields = [];
-    
+
     public $productModel = 'dvizh\shop\models\Product';
     public $productSearchModel = 'dvizh\shop\models\product\ProductSearch';
     public $productCategories = null;
-    
+
     public $orderColumns = ['client_name', 'phone', 'email', 'payment_type_id', 'shipping_type_id'];
-    
+
     public $elementModels = []; //depricated
-	
+
     public $sellers = null; //collable, return seller list
-    
+
     public $sellerModel = '\common\models\User';
-    
+
     public $workers = [];
-    
+
     public $elementToOrderUrl = false;
 
     public $showPaymentColumn = false;
     public $showCountColumn = true;
 
     private $mail;
-    
+
     public $discountDescriptionCallback = '';
+
+    public $searchByElementNameArray = null;
 
     public function init()
     {
@@ -77,57 +79,57 @@ class Module extends \yii\base\Module
                 yii::$app->cart->attachBehavior('ShippingCost', new ShippingCost);
             }
         }
-        
+
         return parent::init();
     }
-    
+
     public function getMail()
     {
         if ($this->mail === null) {
             $this->mail = yii::$app->getMailer();
             $this->mail->viewPath = __DIR__ . '/mails';
-            
+
             if ($this->robotEmail !== null) {
                 $this->mail->messageConfig['from'] = $this->robotName === null ? $this->robotEmail : [$this->robotEmail => $this->robotName];
             }
         }
-        
+
         return $this->mail;
     }
-    
+
     public function getWorkersList()
     {
         if(is_callable($this->workers)) {
             $values = $this->workers;
-            
+
             return $values();
         } else {
             return $this->workers;
         }
-        
+
         return [];
     }
-    
+
     public function getProductCategoriesList()
     {
         if(is_callable($this->productCategories))
         {
             $values = $this->productCategories;
-            
+
             return $values();
         }
-        
+
         return [];
     }
-    
+
     public function getSellerList()
     {
         if(is_callable($this->sellers)) {
             $values = $this->sellers;
-            
+
             return $values();
         }
-        
+
         return [];
     }
 }
