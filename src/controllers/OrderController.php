@@ -336,6 +336,10 @@ class OrderController  extends Controller
             $model->status = $status;
         }
 
+        if ($paymentTypeId = \Yii::$app->request->post('paymentTypeId')) {
+            $model->payment_type_id = $paymentTypeId;
+        }
+
         if ($model->save()) {
 
             $module = Yii::$app->getModule('order');

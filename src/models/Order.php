@@ -154,10 +154,24 @@ class Order extends \yii\db\ActiveRecord implements OrderInterface
         if($field = FieldValue::find()->where(['order_id' => $this->id, 'field_id' => $fieldId])->one()) {
             return $field->value;
         }
-        
+
         return null;
     }
-    
+
+    public function setField($fieldId, $fieldValue)
+    {
+        if ($field = FieldValue::find()->where(['order_id' => $this->id, 'field_id' => $fieldId])->one()) {
+            $field->value = $fieldValue;
+            return $field->save();
+        }
+        $field = new FieldValue();
+
+        $field->field_id = $fieldId;
+        $field->value = $fieldValue;
+        $field->order_id = $this->id;
+        return $field->save();
+    }
+
     public function getPaymentType()
     {
         return $this->hasOne(PaymentType::className(), ['id' => 'payment_type_id']);
