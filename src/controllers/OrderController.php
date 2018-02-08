@@ -192,16 +192,7 @@ class OrderController  extends Controller
             $model->payment = 'no';
             $model->user_id = yii::$app->user->id;
 
-            if($model->save()) {
-                if($adminNotificationEmail = yii::$app->getModule('order')->adminNotificationEmail) {
-                    $sender = yii::$app->getModule('order')->mail
-                        ->compose('admin_notification', ['model' => $model])
-                        ->setTo($adminNotificationEmail)
-                        ->setFrom(yii::$app->getModule('order')->robotEmail)
-                        ->setSubject(Yii::t('order', 'New order')." #{$model->id} ({$model->client_name})")
-                        ->send();
-                }
-
+            if($model->save()) {                
                 $module = $this->module;
                 $orderEvent = new OrderEvent(['model' => $model]);
                 $this->module->trigger($module::EVENT_ORDER_CREATE, $orderEvent);
@@ -214,6 +205,15 @@ class OrderController  extends Controller
                         $fieldValueModel->field_id = $field_id;
                         $fieldValueModel->save();
                     }
+                }
+                
+                if($adminNotificationEmail = yii::$app->getModule('order')->adminNotificationEmail) {
+                    $sender = yii::$app->getModule('order')->mail
+                        ->compose('admin_notification', ['model' => $model])
+                        ->setTo($adminNotificationEmail)
+                        ->setFrom(yii::$app->getModule('order')->robotEmail)
+                        ->setSubject(Yii::t('order', 'New order')." #{$model->id} ({$model->client_name})")
+                        ->send();
                 }
 
                 if($paymentType = $model->paymentType) {
